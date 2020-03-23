@@ -228,7 +228,10 @@
         </div>
     </footer>
 </div>
-
+<script>
+    let lastMody = new Date(document.lastModified).toDateString();
+    document.getElementById("lastModified").innerText = "Last updated " + lastMody;
+</script>
 </body>
 </html>
 

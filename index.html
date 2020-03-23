@@ -58,6 +58,7 @@
                         nerd, and I am looking to join a team of fellow nerds!</p>
                     <p class="card-text">Welcome to my ePortfolio where you can learn more about my skills, experiences,
                         and current/past projects.</p>
+                    <em id="lastModified"></em>
                 </div>
             </div>
         </div>
@@ -74,6 +75,7 @@
                             class="fab fa-linkedin"></i></a></li>
                     <li><a href="https://github.com/BubbaTLC">GitHub <i class="fab fa-github-square"></i></a></li>
                 </ul>
+
                 <p>Made by Tristan Chabot<br><small>Based on <a href="https://getbootstrap.com/">Bootstrap 4</a>. Theme
                     from <a href="https://bootswatch.com/">Bootswatch</a>. Icons from <a
                             href="https://fontawesome.com/">Font Awesome</a>.</small></p>
@@ -81,6 +83,9 @@
         </div>
     </footer>
 </div>
-
+<script>
+    let lastMody = new Date(document.lastModified).toDateString();
+    document.getElementById("lastModified").innerText = "Last updated " + lastMody;
+</script>
 </body>
 </html>
