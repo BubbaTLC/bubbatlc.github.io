@@ -8,13 +8,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+
     <!-- https://bootswatch.com themes: cerulean cosmo cyborg darkly flatly journal litera lumen lux
 	materia	minty pulse sandstone simplex sketchy slate solar spacelab superhero united yeti -->
     <link rel="stylesheet" href="bootstrap.min.lux.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <title>Tristan Chabot Projects</title>
 </head>
-<body>
+<body class="container-sm">
 <div id="navigation">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <a class="navbar-brand">Tristan Chabot</a>
@@ -36,14 +37,14 @@
                 </li>
             </ul>
             <div class="navbar-nav my-2 my-lg-0">
-                <a href="https://github.com/BubbaTLC" class="nav-link mr-sm-2">GitHub <i class="fab fa-github fa-lg"></i></a>
+                <a href="https://github.com/BubbaTLC" class="nav-link mr-sm-2">GitHub <i
+                        class="fab fa-github fa-lg"></i></a>
                 <a href="https://www.linkedin.com/in/tristan-chabot-2b9319181" class="nav-link mr-sm-2">LinkedIn <i
                         class="fab fa-linkedin fa-lg"></i></a>
             </div>
         </div>
     </nav>
 </div>
-
 <div class="jumbotron container-sm" style="padding-top: 150px">
     <h1 class="display-4">Who is Tristan Chabot!?</h1>
     <hr class="my-4">
@@ -71,6 +72,11 @@
     </div>
 </div>
 
+<div class="embed-responsive embed-responsive-16by9 container-sm w-50">
+    <iframe src="https://open.spotify.com/embed/playlist/7qvRAJPFslXNl2ppeeYXmh"
+            frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+</div>
+
 <div class="container-sm" style="padding-top: 50px">
     <footer id="footer">
         <div class="row">
@@ -89,6 +95,7 @@
         </div>
     </footer>
 </div>
+
 <script>
     let lastMody = new Date(document.lastModified).toDateString();
     document.getElementById("lastModified").innerText = "Last updated " + lastMody;
