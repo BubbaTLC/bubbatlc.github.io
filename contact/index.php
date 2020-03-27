@@ -50,13 +50,16 @@
     </nav>
 </div>
 
-<div class="container-sm" id="contact">
+<div class="container-sm" id="contact" style="padding-top: 150px">
     <form>
         <div class="form-group">
             <label for="nameInput">Name</label>
             <input type="text" class="form-control" id="nameInput" maxlength="25" minlength="1" placeholder="Bubba Chabot">
         </div>
     </form>
+<!--    Email -->
+<!--    Company -->
+<!--    Comment/Message-->
 </div>
 
 </body>
