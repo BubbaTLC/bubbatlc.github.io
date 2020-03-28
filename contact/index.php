@@ -54,12 +54,29 @@
     <form>
         <div class="form-group">
             <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" maxlength="25" minlength="1" placeholder="Bubba Chabot">
+            <input type="text" class="form-control" id="nameInput" required maxlength="25" minlength="1"
+                   placeholder="Bubba Chabot">
         </div>
+
+        <div class="form-group">
+            <label for="emailInput">Email</label>
+            <input type="email" class="form-control" id="emailInput" required placeholder="example@mail.com">
+        </div>
+
+        <div class="form-group">
+            <label for="orgInput">Organization</label>
+            <input type="text" class="form-control" id="orgInput" required maxlength="25" minlength="1"
+                   placeholder="SpaceX">
+        </div>
+
+        <div class="form-group">
+            <label for="msgInput">Message</label>
+            <textarea class="form-control" id="msgInput" maxlength="1000" placeholder="Got some questions?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-<!--    Email -->
-<!--    Company -->
-<!--    Comment/Message-->
+
+    <!--    Comment/Message-->
 </div>
 
 </body>
