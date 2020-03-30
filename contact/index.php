@@ -7,38 +7,41 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
 
+// Declare variables
+$name = isset($_SESSION['name']) ? htmlentities($_SESSION['name']) : "name not given";
+$company = isset($_SESSION['company']) ? htmlentities($_SESSION['company']) : "company not given";
+$message = isset($_SESSION['message']) ? htmlentities($_SESSION['message']) : "message not given";
+
+$isPosted = $_SERVER['REQUEST_METHOD'] == 'POST';
 $mail = new PHPMailer(true);
 
-try {
-    // Declare variables
-    $name = "";
-    $company = "";
-    $message = "";
+if($isPosted) {
+    try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+        $mail->isSMTP();                                            // Send using SMTP
+        $mail->Host = 'smtp.gmail.com';                       // Set the SMTP server to send through
+        $mail->SMTPAuth = true;                                   // Enable SMTP authentication
+        $mail->Username = '${{ secrets.senderEmail }}';           // SMTP username
+        $mail->Password = '${{ secrets.password }}';              // SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+        $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
-    //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
-    $mail->isSMTP();                                            // Send using SMTP
-    $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
-    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-    $mail->Username   = '${{ secrets.senderEmail }}';                     // SMTP username
-    $mail->Password   = '${{ secrets.password }}';                               // SMTP password
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+        //Recipients
+        $mail->setFrom('${{ secrets.senderEmail }}', $name);
+        $mail->addAddress('${{ secrets.receiverEmail }}', 'Bubba');      // Add a recipient
 
-    //Recipients
-    $mail->setFrom( '${{ secrets.senderEmail }}' , $name);
-    $mail->addAddress( '${{ secrets.receiverEmail }}' , 'Bubba');     // Add a recipient
+        // Content
+        $mail->isHTML(true);                                                      // Set email format to HTML
+        $mail->Subject = 'Portfolio Contact' . $company;
+        $mail->Body = $message;
 
-    // Content
-    $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = 'Portfolio Contact' . $company;
-    $mail->Body    = $message;
-
-    //$mail->send();
-    $mail->smtpClose();
-    echo 'Message has been sent';
-} catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        //$mail->send();
+        $mail->smtpClose();
+        echo 'Message has been sent';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
 }
 
 ?>
@@ -101,11 +104,6 @@ try {
             <input type="text" class="form-control" id="nameInput" required maxlength="25" minlength="1"
                    placeholder="Bubba Chabot">
         </div>
-
-<!--        <div class="form-group">-->
-<!--            <label for="emailInput">Email</label>-->
-<!--            <input type="email" class="form-control" id="emailInput" required placeholder="example@mail.com">-->
-<!--        </div>-->
 
         <div class="form-group">
             <label for="orgInput">Organization</label>
