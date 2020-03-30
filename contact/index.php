@@ -4,40 +4,44 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-
 require '../vendor/autoload.php';
 
 // Declare variables
-$name = isset($_SESSION['name']) ? htmlentities($_SESSION['name']) : "name not given";
-$company = isset($_SESSION['company']) ? htmlentities($_SESSION['company']) : "company not given";
-$message = isset($_SESSION['message']) ? htmlentities($_SESSION['message']) : "message not given";
+$name = isset($_POST['nameInput']) ? htmlentities($_POST['nameInput']) : "Name not given";
+$nameIsSet = !isset($_POST['nameInput']);
+$org = isset($_POST['orgInput']) ? htmlentities($_POST['orgInput']) : "Company not given";
+$orgIsSet = !isset($_POST['orgInput']);
+$message = isset($_POST['msgInput']) ? htmlentities($_POST['msgInput']) : "Message not given";
+$messageIsSet = !isset($_POST['msgInput']);
 
 $isPosted = $_SERVER['REQUEST_METHOD'] == 'POST';
 $mail = new PHPMailer(true);
 
-if($isPosted) {
+if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
     try {
         //Server settings
         $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
         $mail->isSMTP();                                            // Send using SMTP
-        $mail->Host = 'smtp.gmail.com';                       // Set the SMTP server to send through
-        $mail->SMTPAuth = true;                                   // Enable SMTP authentication
-        $mail->Username = '${{ secrets.senderEmail }}';           // SMTP username
-        $mail->Password = '${{ secrets.password }}';              // SMTP password
+        $mail->Host = 'smtp.gmail.com';                             // Set the SMTP server to send through
+        $mail->SMTPAuth = true;                                     // Enable SMTP authentication
+        //$mail->Username = '${{ secrets.senderEmail }}';             // SMTP username
+        //$mail->Password = '${{ secrets.password }}';                // SMTP password
+
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-        $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+        $mail->Port = 587;                                          // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
         //Recipients
-        $mail->setFrom('${{ secrets.senderEmail }}', $name);
-        $mail->addAddress('${{ secrets.receiverEmail }}', 'Bubba');      // Add a recipient
+//        $mail->setFrom('${{ secrets.senderEmail }}', $name);
+//        $mail->addAddress('${{ secrets.receiverEmail }}', 'Bubba');      // Add a recipient
 
         // Content
-        $mail->isHTML(true);                                                      // Set email format to HTML
-        $mail->Subject = 'Portfolio Contact' . $company;
+        $mail->isHTML(true);                                                     // Set email format to HTML
+        $mail->Subject = 'Portfolio Contact' . $orgIsSet;
         $mail->Body = $message;
 
         //$mail->send();
         $mail->smtpClose();
+
         echo 'Message has been sent';
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -98,25 +102,53 @@ if($isPosted) {
 </div>
 
 <div class="container-sm" id="contact" style="padding-top: 150px">
-    <form>
-        <div class="form-group">
-            <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" required maxlength="25" minlength="1"
-                   placeholder="Bubba Chabot">
+    <form method="post" class="needs-validation" novalidate>
+        <div class="form-group has-danger">
+            <label class="form-control-label" for="nameInput">Name</label>
+            <?php if ($isPosted && !$orgIsSet) { ?>
+                <input type="text" class="form-control is-invalid" name="nameInput" id="nameInput" required
+                       maxlength="25"
+                       minlength="1"
+                       placeholder="Bubba Chabot">
+                <div class="invalid-feedback">Please specify a name.</div>
+            <?php } else { ?>
+                <input type="text" class="form-control" name="nameInput" id="nameInput" required maxlength="25"
+                       minlength="1"
+                       placeholder="Bubba Chabot">
+            <?php } ?>
+            <!--            <span class="text-danger">Please specify a name.</span>-->
         </div>
 
         <div class="form-group">
-            <label for="orgInput">Organization</label>
-            <input type="text" class="form-control" id="orgInput" required maxlength="25" minlength="1"
-                   placeholder="SpaceX">
+            <label class="form-control-label" for="orgInput">Organization</label>
+            <?php if ($isPosted && !$orgIsSet) { ?>
+                <input type="text" class="form-control is-invalid" name="orgInput" id="orgInput" required maxlength="25"
+                       minlength="1"
+                       placeholder="SpaceX">
+                <span class="text-danger">Please specify an organization.</span>
+            <?php } else { ?>
+                <input type="text" class="form-control" name="orgInput" id="orgInput" required maxlength="25"
+                       minlength="1"
+                       placeholder="SpaceX">
+            <?php } ?>
         </div>
 
         <div class="form-group">
-            <label for="msgInput">Message</label>
-            <textarea class="form-control" id="msgInput" maxlength="1000" placeholder="Got some questions?"></textarea>
+            <label class="form-control-label" for="msgInput">Message</label>
+            <?php if ($isPosted && !$orgIsSet) { ?>
+                <textarea class="form-control is-invalid" id="msgInput" name="msgInput" required maxlength="1000"
+                          placeholder="Got some questions?"></textarea>
+                <span class="text-danger">Please say something nice.</span>
+            <?php } else { ?>
+                <textarea class="form-control" id="msgInput" name="msgInput" required maxlength="1000"
+                          placeholder="Got some questions?"></textarea>
+            <?php } ?>
         </div>
-        <button type="submit" class="btn btn-primary" onclick="">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <?php
+    var_dump($_POST);
+    ?>
 </div>
-</body>
+</bod>
 </html>
