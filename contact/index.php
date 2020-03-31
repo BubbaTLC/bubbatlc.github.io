@@ -8,14 +8,17 @@ require '../vendor/autoload.php';
 
 // Declare variables
 $name = isset($_POST['nameInput']) ? htmlentities($_POST['nameInput']) : "Name not given";
-$nameIsSet = !isset($_POST['nameInput']);
+$nameIsSet = !$_POST['nameInput'] == "";
 $org = isset($_POST['orgInput']) ? htmlentities($_POST['orgInput']) : "Company not given";
-$orgIsSet = !isset($_POST['orgInput']);
+$orgIsSet = !$_POST['orgInput'] == "";
 $message = isset($_POST['msgInput']) ? htmlentities($_POST['msgInput']) : "Message not given";
-$messageIsSet = !isset($_POST['msgInput']);
+$messageIsSet = !$_POST['msgInput'] == "";
+
+$msgSent = false;
 
 $isPosted = $_SERVER['REQUEST_METHOD'] == 'POST';
 $mail = new PHPMailer(true);
+
 
 if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
     try {
@@ -24,8 +27,8 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
         $mail->isSMTP();                                            // Send using SMTP
         $mail->Host = 'smtp.gmail.com';                             // Set the SMTP server to send through
         $mail->SMTPAuth = true;                                     // Enable SMTP authentication
-        //$mail->Username = '${{ secrets.senderEmail }}';             // SMTP username
-        //$mail->Password = '${{ secrets.password }}';                // SMTP password
+//        $mail->Username = '${{ secrets.senderEmail }}';             // SMTP username
+//        $mail->Password = '${{ secrets.password }}';                // SMTP password
 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
         $mail->Port = 587;                                          // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
@@ -42,8 +45,12 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
         //$mail->send();
         $mail->smtpClose();
 
-        echo 'Message has been sent';
+        $msgSent = true;
+        $name = "";
+        $org = "";
+        $message = "";
     } catch (Exception $e) {
+        $msgSent = false;
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
@@ -67,6 +74,11 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
     <link rel="apple-touch-icon-precomposed" href="../images/favicons/source-code-icon-152-213242.png">
     <title>Tristan Chabot Projects</title>
 </head>
+
+<script>
+    // https://davidwalsh.name/javascript-debounce-function
+</script>
+
 <body>
 <div id="navigation">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
@@ -102,7 +114,19 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
 </div>
 
 <div class="container-sm" id="contact" style="padding-top: 150px">
-    <form method="post" class="needs-validation" novalidate>
+    <?php if($isPosted && !$msgSent){ ?>
+    <div class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> We had a problem submitting your information.
+    </div>
+    <?php }elseif ($isPosted && $msgSent) { ?>
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Thank you!</strong> I will try to get back to you right away.</a>.
+        </div>
+    <?php } ?>
+
+    <form method="post" class="needs-validation" debounce="500" novalidate>
         <div class="form-group has-danger">
             <label class="form-control-label" for="nameInput">Name</label>
             <?php if ($isPosted && !$orgIsSet) { ?>
@@ -146,9 +170,12 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <?php
-    var_dump($_POST);
-    ?>
 </div>
-</bod>
+<script>
+    // Prevent refresh from re-submitting
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+</body>
 </html>
