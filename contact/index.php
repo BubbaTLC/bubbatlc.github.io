@@ -9,6 +9,9 @@ require '../vendor/autoload.php';
 // Declare variables
 $name = isset($_POST['nameInput']) ? htmlentities($_POST['nameInput']) : "Name not given";
 $nameIsSet = !$_POST['nameInput'] == "";
+$email = isset($_POST['emailInput']) ? $_POST['emailInput'] : "Email not given";
+$emailIsSet = preg_match("/[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+.[a-zA-Z]{2,4}/", $email);
+$emailIsSet = !$_POST['emailInput'] == "";
 $org = isset($_POST['orgInput']) ? htmlentities($_POST['orgInput']) : "Company not given";
 $orgIsSet = !$_POST['orgInput'] == "";
 $message = isset($_POST['msgInput']) ? htmlentities($_POST['msgInput']) : "Message not given";
@@ -20,29 +23,33 @@ $isPosted = $_SERVER['REQUEST_METHOD'] == 'POST';
 $mail = new PHPMailer(true);
 
 
-if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
+if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet && $emailIsSet) {
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+        //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
         $mail->isSMTP();                                            // Send using SMTP
         $mail->Host = 'smtp.gmail.com';                             // Set the SMTP server to send through
         $mail->SMTPAuth = true;                                     // Enable SMTP authentication
-//        $mail->Username = '${{ secrets.senderEmail }}';             // SMTP username
-//        $mail->Password = '${{ secrets.password }}';                // SMTP password
+        $mail->Username = '${{ secrets.senderEmail }}';             // SMTP username
+        $mail->Password = '${{ secrets.password }}';                // SMTP password
 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
         $mail->Port = 587;                                          // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
         //Recipients
-//        $mail->setFrom('${{ secrets.senderEmail }}', $name);
-//        $mail->addAddress('${{ secrets.receiverEmail }}', 'Bubba');      // Add a recipient
+        $mail->setFrom('${{ secrets.senderEmail }}');
+        $mail->addAddress('${{ secrets.receiverEmail }}', 'Bubba Chabot');      // Add a recipient
 
         // Content
         $mail->isHTML(true);                                                     // Set email format to HTML
-        $mail->Subject = 'Portfolio Contact' . $orgIsSet;
-        $mail->Body = $message;
+        $mail->Subject = $name . " - " . $org;
+        $mail->Body = <<<EOT
+        <p>$name from $org has contacted you.</p>
+        <p>You can reach them at $email</p>
+        <p>$message</p>
+EOT;
 
-        //$mail->send();
+        $mail->send();
         $mail->smtpClose();
 
         $msgSent = true;
@@ -50,11 +57,10 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
         $org = "";
         $message = "";
     } catch (Exception $e) {
+        $e;
         $msgSent = false;
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +119,13 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
     </nav>
 </div>
 
-<div class="container-sm" id="contact" style="padding-top: 150px">
+<div class="jumbotron container-sm" style="padding-top: 150px">
+    <h1 class="display-4">Got some Questions?</h1>
+    <hr class="my-4">
+    <p class="lead">Enter the correct information for each field and I will try my best to get back to you.</p>
+</div>
+
+<div class="container-sm" id="contact" >
     <?php if($isPosted && !$msgSent){ ?>
     <div class="alert alert-dismissible alert-danger">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -139,6 +151,19 @@ if ($isPosted && $nameIsSet && $orgIsSet && $messageIsSet) {
                 <input type="text" class="form-control" name="nameInput" id="nameInput" required maxlength="25"
                        minlength="1"
                        placeholder="Bubba Chabot">
+            <?php } ?>
+            <!--            <span class="text-danger">Please specify a name.</span>-->
+        </div>
+
+        <div class="form-group has-danger">
+            <label class="form-control-label" for="emailInput">Email</label>
+            <?php if ($isPosted && !$emailIsSet) { ?>
+                <input type="email" class="form-control is-invalid" name="emailInput" id="emailInput" required
+                       placeholder="example@mail.com">
+                <div class="invalid-feedback">Please specify a valid email.</div>
+            <?php } else { ?>
+                <input type="email" class="form-control" name="emailInput" id="emailInput" required
+                       placeholder="example@mail.com">
             <?php } ?>
             <!--            <span class="text-danger">Please specify a name.</span>-->
         </div>
