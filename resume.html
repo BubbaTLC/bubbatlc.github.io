@@ -233,6 +233,7 @@
     </footer>
 </div>
 <script>
+    console.log("${{ secrets.senderEmail }}");
     let lastMody = new Date(document.lastModified).toDateString();
     document.getElementById("lastModified").innerText = "Last updated " + lastMody;
 </script>
