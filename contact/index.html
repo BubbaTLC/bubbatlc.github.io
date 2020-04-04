@@ -5,10 +5,11 @@
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
 	        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
 	        crossorigin="anonymous"></script>
+	<!--    https://jqueryvalidation.org/	-->
+	<script src="/contact/jquery.validate.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 	        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
 	        crossorigin="anonymous"></script>
-	<script src="contact/validator.js"></script>
 	<!-- https://bootswatch.com themes: cerulean cosmo cyborg darkly flatly journal litera lumen lux
 	materia	minty pulse sandstone simplex sketchy slate solar spacelab superhero united yeti -->
 	<link rel="stylesheet" href="../bootstrap.min.lux.css">
@@ -16,7 +17,60 @@
 	<link rel="icon" type="image/x-icon" href="../images/favicons/favicon.ico">
 	<link rel="apple-touch-icon-precomposed" href="../images/favicons/source-code-icon-152-213242.png">
 	
-	<title>Tristan Chabot Projects</title>
+	<title>Tristan Chabot</title>
+	<script>
+		$(document).ready(function ()
+		{
+			$("#contactForm").validate(({
+				// debug: true,
+				errorClass: "is-invalid",
+				validClass: "is-valid",
+				errorElement: "div",
+				rules: {
+					name: {
+						required: true,
+						maxlength: 25
+					},
+					email: {
+						required: true,
+						email: true
+					},
+					organization: {
+						required: true,
+						maxlength: 25
+					},
+					message: {
+						required: true,
+						maxlength: 1000
+					}
+				},
+				messages: {
+					name: {
+						required: "Please enter a name"
+					},
+					email: {
+						required: "Please enter a email"
+					},
+					organization: {
+						required: "Please enter an organization name"
+					},
+					message: {
+						required: "Please say something nice",
+						maxlength: "Message must be less than 1000 characters"
+					}
+				}
+			}));
+		});
+	</script>
+	<style>
+		div.is-invalid {
+			display: none;
+			width: 100%;
+			margin-top: 0.25rem;
+			font-size: 80%;
+			color: #d9534f
+		}
+	</style>
 </head>
 <body>
 <div id="navigation">
@@ -51,58 +105,71 @@
 		</div>
 	</nav>
 </div>
-
-<div class="jumbotron container-sm" style="padding-top: 150px">
-	<h1 class="display-4">Got some Questions?</h1>
-	<hr class="my-4">
-	<p class="lead">Enter the correct information for each field and I will try my best to get back to you.</p>
+<div class="container-sm" id="jumbo">
+	<div class="jumbotron container-sm border" style="padding-top: 150px">
+		<h1 class="display-4">Got some Questions?</h1>
+		<hr class="my-4">
+		<p class="lead">Feel free to contact me through the following form.</p>
+	</div>
 </div>
 
 <div class="container-sm" id="contact">
-	<div class="alert alert-dismissible alert-success" hidden>
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		<strong>Thank you!</strong> I will try to get back to you right away.</a>.
-	</div>
-	
 	<!--    https://formspree.io/mbjajjvy   -->
-	<form method="post" class="needs-validation" action="#" onsubmit="" novalidate name="contactForm" id="contactForm">
-		<div class="form-group has-danger">
-			<label class="form-control-label" for="nameInput">Name</label>
-			<input type="text" class="form-control is-invalid" name="Name" id="nameInput" required
+	<!-- -->
+	<form method="post" class="needs-validation" action="https://formspree.io/mbjajjvy" novalidate name="contactForm"
+	      id="contactForm">
+		<legend>Contact</legend>
+		<div class="form-group">
+			<label class="form-control-label" for="name">Name</label>
+			<input type="text" class="form-control border" name="name" id="name" required
 			       maxlength="25"
-			       minlength="1"
-			       placeholder="Bubba Chabot"
-			       value="">
-			<div class="invalid-feedback">Please specify a name.</div>
-		</div>
-		
-		<div class="form-group has-danger">
-			<label class="form-control-label" for="emailInput">Email</label>
-			<input type="email" class="form-control is-invalid" name="Email" id="emailInput" required
-			       placeholder="example@mail.com"
-			       value="">
-			<div class="invalid-feedback" hidden>Please specify a valid email.</div>
-		
+			       placeholder="Bubba Chabot">
 		</div>
 		
 		<div class="form-group">
-			<label class="form-control-label" for="orgInput">Organization</label>
-			<input type="text" class="form-control is-invalid" name="Organization" id="orgInput" required maxlength="25"
-			       minlength="1"
-			       placeholder="SpaceX"
-			       value="">
-			<div class="invalid-feedback" hidden>Please specify an organization.</div>
+			<label class="form-control-label" for="email">Email</label>
+			<input type="email" class="form-control border" name="email" id="email" required
+			       placeholder="example@mail.com">
 		</div>
 		
 		<div class="form-group">
-			<label class="form-control-label" for="msgInput">Message</label>
-			<textarea class="form-control is-invalid" id="msgInput" name="Message" required maxlength="1000"
-			          placeholder="Got some questions?"></textarea>
-			<div class="invalid-feedback" id="msgError" hidden>Please say something nice.</div>
+			<label class="form-control-label" for="organization">Organization</label>
+			<input type="text" class="form-control border" name="organization" id="organization" required
+			       maxlength="25"
+			       placeholder="SpaceX">
 		</div>
-		<input type="hidden" name="_subject" id="subject" value=""/>
+		
+		<div class="form-group">
+			<label class="form-control-label" for="message">Message</label>
+			<textarea class="form-control border" id="message" name="message" required maxlength="1000"
+			          placeholder="Got some questions?"
+			          rows="10"></textarea>
+		</div>
 		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>
 </div>
+<div class="container-sm" style="margin-top: 50px">
+	<footer id="footer" class="border p-3" style="background-color: #f7f7f9">
+		<div class="row">
+			<div class="col-lg-12">
+				<ul class="list-unstyled">
+					<li class="float-lg-right"><a href="#top">Back to top</a></li>
+					<li><a href="https://www.linkedin.com/in/tristan-chabot-2b9319181">LinkedIn <i
+							class="fab fa-linkedin"></i></a></li>
+					<li><a href="https://github.com/BubbaTLC">GitHub <i class="fab fa-github-square"></i></a></li>
+					<li><em id="lastModified"></em></li>
+				</ul>
+				<p>Made by Tristan Chabot<br><small>Based on <a href="https://getbootstrap.com/">Bootstrap 4</a>. Theme
+					from <a href="https://bootswatch.com/">Bootswatch</a>. Icons from <a
+							href="https://fontawesome.com/">Font Awesome</a>. Form submission with <a
+							href="https://formspree.io/">Formspree</a>.</small></p>
+			</div>
+		</div>
+	</footer>
+</div>
+<script>
+	let lastMody = new Date(document.lastModified).toDateString();
+	document.getElementById("lastModified").innerText = "Last updated " + lastMody;
+</script>
 </body>
 </html>
